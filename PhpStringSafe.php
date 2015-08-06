@@ -6,8 +6,7 @@
 class PhpStringSafe{
 
 //要过滤的非法字符
-protected $ArrFiltrate=array("update","union","select","insert","delete","into",
-							"load_file","OR");
+protected $ArrFiltrate=array("update","union","load_file","OR");
 
 //过滤传入的字符串，返回过滤后数据
 public function Validation($StrFiltrate,$uesFilter)
@@ -16,6 +15,7 @@ public function Validation($StrFiltrate,$uesFilter)
 	{
 		$StrFiltrate=var_dump(filter_var($StrFiltrate,FILTER_SANITIZE_STRING));
 		$StrFiltrate=var_dump(filter_var($StrFiltrate,FILTER_SANITIZE_SPECIAL_CHARS)); 
+		$StrFiltrate=mysql_real_escape_string($StrFiltrate);
 	}
 	foreach ($ArrFiltrate as $key=>$value)
 	{

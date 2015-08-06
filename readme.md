@@ -14,3 +14,7 @@ You should registered all the legally PHP file from the project to the module be
 FileValidation
 -------------
 This module can clear PHP code in a picture very precise. It can also be used to check compression file by checking file header.
+
+IoScrutineering
+--------------------------
+Checking and formatting operations on IO.
