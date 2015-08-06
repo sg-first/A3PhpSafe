@@ -43,13 +43,11 @@ public function DeleteFiltrate($filtrate)
 protected function MergeInput()
 {
 	$ArrPostAndGet=0;
-	
 	foreach($HTTP_POST_VARS as $key=>$value)
 	{$ArrPostAndGet[]=$value;}
 	foreach($HTTP_GET_VARS as $key=>$value)
 	{$ArrPostAndGet[]=$value;}
-
-	return ArrPostAndGet;
+	return $ArrPostAndGet;
 }
 
 }

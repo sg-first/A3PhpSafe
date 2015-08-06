@@ -46,7 +46,7 @@ protected static function GetTypeCode($filename)
     $bin = fread($file, 2);//只读2字节  
     fclose($file);  
     $strInfo = @unpack("C2chars", $bin);  
-    $typeCode = intval($strInfo['chars1'].$strInfo['chars2']);  
+    return intval($strInfo['chars1'].$strInfo['chars2']);  
 }
 
 public static function ValidationRAR($filename)

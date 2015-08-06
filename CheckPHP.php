@@ -5,16 +5,16 @@
 */
 class CheckPHP{
 
-protected static $AllPHP=array(dirname(__FILE__)."/PhpStringSafe");//目前所有的PHP程序，不用写后缀
+protected static $AllPHP=array(dirname(__FILE__)."/PhpStringSafe.php");//目前所有的PHP程序
 public static $PathMode=false;//真为绝对，假为相对
 protected static $Recursiving=false;//是否正在递归
 
 public static function AddPHP($path)//相对路径需要用/开头
 {
 	if($PathMode==false)
-	{$AllPHP[]=dirname(__FILE__).$path;}
+	{$AllPHP[]=dirname(__FILE__).$path.".php";}
 	else
-	{$AllPHP[]=$path;}
+	{$AllPHP[]=$path.".php";}
 }
 
 public static function Check($directory)//相对路径需要用/开头
@@ -45,7 +45,7 @@ public static function Check($directory)//相对路径需要用/开头
 			{
 				foreach($AllPHP as $key=>$value)//在所有注册过的文件中遍历查找是否存在同名
 				{
-					if("$directory/$file"==$value.".php")//注意，php必须都是小写
+					if("$directory/$file"==$value)//注意，php必须都是小写
 					{continue;}//找到了就继续
 				}
 				unlink("$directory/$file");//找不到对应的就删
@@ -54,6 +54,7 @@ public static function Check($directory)//相对路径需要用/开头
 
 	}
 	$mydir->close();
+	$Recursiving=false;
 }
 
 }
