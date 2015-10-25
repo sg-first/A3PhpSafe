@@ -5,7 +5,7 @@ This is an experimental Lightweight PHP security library.
 
 CharacterValidation
 --------------
-[readme](https://github.com/sg-first/A3PhpSafe/blob/master/CharacterValidation/readmemd)
+[readme](https://github.com/sg-first/A3PhpSafe/blob/master/CharacterValidation/readme.md)
 
 
 CheckPHP
