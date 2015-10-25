@@ -38,7 +38,7 @@ public static function ImageSave($file, $path)
 
 /* 
 处理原理：通过读文件头判断文件类型
-使用方法：调用Validation函数，返回布尔值
+使用方法：调用Validation函数，返回文件类型
  */ 
 protected static function GetTypeCode($filename)
 {
@@ -49,18 +49,18 @@ protected static function GetTypeCode($filename)
     return intval($strInfo['chars1'].$strInfo['chars2']);  
 }
 
-public static function ValidationRAR($filename)
+public static function ValidationType($filename)
 {
-	if(GetTypeCode($filename)==8297)
-	{return true;}
-	return false;
-}
-
-public static function ValidationZIP($filename)
-{
-	if(GetTypeCode($filename)==8075)
-	{return true;}
-	return false;
+	switch (GetTypeCode($filename)) 
+	{
+		case 7790: return 'exe';
+		case 8297: return 'rar';
+		case 255216: return 'jpg';
+		case 7173: return 'gif';
+		case 6677: return 'bmp';
+		case 13780: return 'png';
+		default: return 'unknown';
+	}
 }
 
 }
