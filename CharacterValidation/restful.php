@@ -72,12 +72,12 @@ function fmtResponse($headers, $content) {
  * @param $db - optional default open Db object or null (defaults to null)
  * @return formatted response of header and content.
  */
-function defaultRoute($path_info, $options, $db = null) {
+function defaultRoute(/*$path_info, $options, $db = null*/) 
+{
     $h = array();
     $h[] = fmtHeader("File Not Found", true, 404);
     $h[] = fmtHeader("Content-Type: text/plain", true);
-    // If this was a user defined route handler they would use things like safeGET(), safePOST(), etc. to
-    // process the request and validate things.
+    // 如果这是一个用户定义的消息路由，像safeget()，safepost()这样用的。就做一些处理请求和验证的事情。
     return fmtResponse($h, "File Not Found");
 }
 
@@ -114,7 +114,7 @@ function executeRoute($path_info, $routes, $db = null) {
         }
     }
     // We really didn't find it so the default case is 404.
-    return defaultRoute($path, null, $db);
+    return defaultRoute(/*$path, null, $db*/);
 }
 
 /**

@@ -25,14 +25,11 @@ if (defined("SAFELY_ALLOWED_HTML") === false) {
  * @param $utf2html_string - the string to convert.
  * @return the converted string.
  */
-function utf2html ($utf2html_string, $is_hex = false) {
+function utf2html ($utf2html_string, $is_hex = false) 
+{
     $f = 0xffff;
     $convmap = array(
-    /* <!ENTITY % HTMLlat1 PUBLIC "-//W3C//ENTITIES Latin 1//EN//HTML">
-    %HTMLlat1; */
     160,  255, 0, $f,
-    /* <!ENTITY % HTMLsymbol PUBLIC "-//W3C//ENTITIES Symbols//EN//HTML">
-    %HTMLsymbol; */
     402,  402, 0, $f,  913,  929, 0, $f,  931,  937, 0, $f,
     945,  969, 0, $f,  977,  978, 0, $f,  982,  982, 0, $f,
     8226, 8226, 0, $f, 8230, 8230, 0, $f, 8242, 8243, 0, $f,
@@ -135,11 +132,12 @@ function isValidEmail($s) {
  * E.g. If you want to validate with RegExp then you need to manually 
  * create your map.
  * @param $obj - e.g. $_GET, $_POST or $_SERVER
- * @param $do_urldecode - flag to trigger urldecode of values before
+ * @param $do_urldecode - flag to trigger urldecode of values before（这个参数貌似并没卵用，先删掉）
  * analysize the content.
  * @return a validation map array
  */
-function defaultValidationMap ($obj, $do_urldecode = false) {
+function defaultValidationMap ($obj/*,$do_urldecode = false*/) 
+{
     $is_varname = '/^([A-Z,a-z]|_|[0-9])+$/';
     $has_tags = '/(<[A-Z,a-z]+|<\/[A-Z,a-z]+>)/';
     $validation_map = array();
@@ -189,14 +187,14 @@ function strip_attributes($s, $allowedattr = array("href", "src", "title", "alt"
            $newattrs = array();
            foreach ($attrs as $a) {
                $tmp = explode("=", $a);
-               if (trim($a) !== "" && isset($tmp[0]) && isset($tmp[1]) && trim($tmp[0]) !== "" && in_array(strtolower(trim($tmp[0])), $allowedattr)) {
-                   // Only allowed attributes should get passed through
-                   // but href must not contain a javascript protocol!
-                   if (strpos(strtolower($tmp[1]), "javascript:") === false) {
-                       // attribute should not have JS injection.
-                       $newattrs[] = trim($a);
-                   }
-               }
+               if (trim($a) !== "" && 
+                    isset($tmp[0]) && 
+                    isset($tmp[1]) && 
+                    trim($tmp[0]) !== "" && 
+                    in_array(strtolower(trim($tmp[0])), $allowedattr)&&
+                    strpos(strtolower($tmp[1]), "javascript:") === false//只有允许的属性应该通过，但链接必须不包含js协议
+                    )
+               {$newattrs[] = trim($a);//属性不应该有js注入}
            }
            $attrs = implode(" ", $newattrs);
            $rpl = str_replace($r[1], $attrs, $tag);
@@ -222,7 +220,6 @@ function fix_html_quotes($s) {
             $inCData = false;
         } else if ($inCData === true) {
             $a[$i] = str_replace(array('"', "'"), array('&quot;', '&apos;'), $a[$i]);
-            //$a[$i] = htmlentities($a[$i], ENT_QUOTES | ENT_HTML5);
         }
     }
     return  implode('', $a);
@@ -233,14 +230,16 @@ function fix_html_quotes($s) {
  * this replace mysql_real_escape_string because this requires a mysql
  * connection to exist.
  */
-function escape($value) {
-    // Handle multi-byte issues by converting to UTF-8
-    // if needed.
+function escape($value) 
+{
+    // 通过转换为UTF-8解决多字节问题
     $from_encoding = mb_detect_encoding($value);
-    if ($from_encoding === false) {
-        die("character encoding detection failed!");
-    } else if ($from_encoding !== "UTF-8") {
-        $value = mb_convert_encoding($value, "UTF-8", $from_encoding);
+    if ($from_encoding === false) 
+    {throw new Exception("character encoding detection failed!");} 
+    else 
+    {
+        if ($from_encoding !== "UTF-8") 
+        {$value = mb_convert_encoding($value, "UTF-8", $from_encoding);}
     }
 
     $search  = array( "\\",   "\x00", "\n",  "\r",  "'",  '"',  "\x1a" );
@@ -261,92 +260,77 @@ function escape($value) {
 function makeAs ($value, $format, $verbose = false) {
     switch (strtolower($format)) {
     case 'array_text':
-        if (!is_array($value)) {
-            return false;
-        }
+        if (!is_array($value)) 
+        {return false;}
         $a = array();
-        foreach($value as $i => $val) {
-           $a[] = escape(strip_tags($val));
-        }
+        foreach($value as $i => $val) 
+        {$a[] = escape(strip_tags($val));}
         return $a;
     case 'array_integers':
-        if (!is_array($value)) {
-            return false;
-        }
+        if (!is_array($value)) 
+        {return false;}
         $a = array();
-        foreach($value as $i => $val) {
-            if (is_numeric($val) && intval($val) !== false) {
-               $a[] = intval($val); 
-            }
+        foreach($value as $i => $val) 
+        {
+            if (is_numeric($val) && intval($val) !== false) 
+            {$a[] = intval($val); }
         }
         return $a;
     case 'integer':
         $i = intval($value);
-        if ("$i" == $value) {
-            return $i;
-        }
+        if ("$i" == $value) 
+        {return $i;}
         break;
     case 'float':
         $f = floatval($value);
-        if ("$f" == $value) {
-            return $f;
-        }
+        if ("$f" == $value) 
+        {return $f;}
         break;
     case 'boolean':
-        if ($value === 'true' || 
-                $value === '1') {
-            return true;
-        }
+        if ($value === 'true' || $value === '1') 
+        {return true;}
         return false;
     case 'varname_dash':
-        if (is_string($value)) {
+        if (is_string($value)) 
+        {
             preg_match_all('/\w|[0-9]|_|-/', $value, $s);
             return implode('', $s[0]);
         }
         return false;
     case 'varname':
-        if (is_string($value)) {
+        if (is_string($value)) 
+        {
             preg_match_all('/\w|[0-9]|_/', $value, $s);
             return implode('', $s[0]);
         }
         return false;
     case 'varname_list':
         $parts = explode(',', $value);
-        for ($i = 0; $i < count($parts); $i += 1) {
-            // NOTE on replaced line: $parts[$i] = preg_replace('/\W/u', '', $parts[$i]);
-            // PRCE was not compiled with UTF-8 support on web-app.usc.edu. 2015-02-19 RSD
-           $parts[$i] = preg_replace('/\W/', '', $parts[$i]);
-        }
+        for ($i = 0; $i < count($parts); $i += 1) 
+        {$parts[$i] = preg_replace('/\W/', '', $parts[$i]);}
         return implode(',', $parts);
     case 'html':
-        if (gettype($value) === "string") {
-           return escape(fix_html_quotes(strip_attributes(strip_tags(utf2html($value), SAFELY_ALLOWED_HTML))));
-        }
+        if (gettype($value) === "string") 
+        {return escape(fix_html_quotes(strip_attributes(strip_tags(utf2html($value), SAFELY_ALLOWED_HTML))));}
         return false;
     case 'text':
-        if(gettype($value) === "string") {
-            return escape(strip_tags($value), false);
-        }
+        if(gettype($value) === "string") 
+        {return escape(strip_tags($value), false);}
         return false;
     case 'url':
-        if (isValidUrl($value) === true) {
-            return $value;
-        }
+        if (isValidUrl($value) === true) 
+        {return $value;}
         // Check to see if we're just missing protocol and try http://.
-        if (strpos($value, '://') === false  && 
-                isValidUrl('http://' . $value) === true) {
-            return 'http://' . $value;
-        }
+        if (strpos($value, '://') === false  && isValidUrl('http://' . $value) === true) 
+        {return 'http://' . $value;}
         return false;
     case 'email':
-        if (isValidEmail($value) === true) {
-            return $value;
-        }
+        if (isValidEmail($value) === true) 
+        {return $value;}
         return false;
     case 'filename':
-        if (isValidFilename($value) === true) {
-            return $value;
-        }
+        if (isValidFilename($value) === true) 
+        {return $value;}
         return false;
     }
     // We haven't found one of our explicit formats so...
@@ -354,12 +338,10 @@ function makeAs ($value, $format, $verbose = false) {
         str_replace(">", "\>", $format) . '$' . ">",
         $value);
 
-    if ($verbose === true) {
-        error_log("value, format and preg_math result: $value $format -> $preg_result");
-    }
-    if ($preg_result === 1) {
-        return $value;
-    }
+    if ($verbose === true) 
+    {error_log("value, format and preg_math result: $value $format -> $preg_result");}
+    if ($preg_result === 1) 
+    {return $value;}
     return false;
 }
 
@@ -378,7 +360,7 @@ function safeGET ($validation_map = NULL, $verbose = false) {
     if (SAFELY_ALLOW_UNSAFE === true && $validation_map === NULL) {
         // We support limited auto-detect types otherwise App
         // Code needs to supply a validation map.
-        $validation_map = defaultValidationMap($_GET, true);
+        $validation_map = defaultValidationMap($_GET/*,true*/);
     }
     foreach($validation_map as $key => $format) {
         // Since RESTful style allows dashes in the URLs we should support
@@ -406,7 +388,7 @@ function safePOST ($validation_map = NULL, $verbose = false) {
     $results = array();
     
     if (SAFELY_ALLOW_UNSAFE === true && $validation_map === NULL) {
-        $validation_map = defaultValidationMap($_POST, false);
+        $validation_map = defaultValidationMap($_POST/*,false*/);
     }
     foreach($validation_map as $key => $format) {
         $key = makeAs($key, "varname", $verbose);
@@ -432,7 +414,7 @@ function safeSERVER ($validation_map = NULL, $verbose = false) {
     $results = array();
     
     if ($validation_map === NULL) {
-        $validation_map = defaultValidationMap($_SERVER, false);
+        $validation_map = defaultValidationMap($_SERVER/*,false*/);
     }
     foreach($validation_map as $key => $format) {
         $key = makeAs($key, "varname", $verbose);
