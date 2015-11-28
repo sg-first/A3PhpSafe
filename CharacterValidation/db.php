@@ -50,12 +50,12 @@ class Db {
      * @param $verbose - true, emmit message, otherwise ignore
      */
     public function logIt($msg, $verbose) {
-        if ($verbose === true) {
-            if ($this->log_output === 'error_log') {
-                error_log($msg);
-            } else {
-                echo '<pre>Log: ' . $msg . '</pre>' . PHP_EOL;
-            }
+        if ($verbose) 
+        {
+            if ($this->log_output === 'error_log') 
+            {error_log($msg);} 
+            else 
+            {echo '<pre>Log: ' . $msg . '</pre>' . PHP_EOL;}
         }
     }
 
@@ -97,16 +97,19 @@ class Db {
         $this->last_insert_id = 0;
         $this->rows = array();
         $this->rows_affected = 0;
-        if ($this->db_type === 'mysqli' &&
-            $this->link !== false) {
+        if ($this->db_type === 'mysqli'&&$this->link) 
+        {
             mysqli_close($this->link);
             $this->link = null;
             return $this->link;
-        } else if ($this->db_type === 'mysql' &&
-                $this->link !== false) {
-            mysql_close($this->link);
-            $this->link = null;
-            return $this->link;
+        } else 
+        {
+            if ($this->db_type === 'mysql'&&$this->link) 
+            {
+                mysql_close($this->link);
+                $this->link = null;
+                return $this->link;
+            }
         }
         error_log("Can't close db " . $this->db_name);
         return false;
@@ -124,7 +127,7 @@ class Db {
         // use a regular SQL query
         // use a prepared statement
             $stmt = mysqli_stmt_init($this->link);
-            if (mysqli_stmt_prepare($stmt, $sql) === false) {
+            if (!mysqli_stmt_prepare($stmt, $sql)) {
                 $this->logIt("Can't prepare $sql", $verbose);
                 return false;
             }
@@ -161,10 +164,10 @@ class Db {
 
             // Now gather up the results, close the statement.
             $this->rows = array();
-            if ($result !== false) {
-                while($row = mysqli_fetch_assoc($result)) {
-                    $this->rows[] = $row;
-                }
+            if ($result) 
+            {
+                while($row = mysqli_fetch_assoc($result)) 
+                {$this->rows[] = $row;}
             }
             mysqli_stmt_close($stmt);
             return true;
@@ -172,21 +175,29 @@ class Db {
             if (strpos($sql, '?') > -1) {
                 $parts = explode('?', $sql);
                 $assembled = array();
-                for ($i = 0, $j = 0; $i < count($parts); $i += 1) {
+                
+                for ($i = 0, $j = 0; $i < count($parts); $i += 1) 
+                {
                     $assembled[] = $parts[$i];
                     $call_param = '';
-                    if ($j < count($params)) {
-                        if (is_int($params[$j])) {
+                    if ($j < count($params)) 
+                    {
+                        if (is_int($params[$j])) 
+                        {
                             $call_param = intval($params[$j]);
-                        } else if (is_float($params[$j])) {
-                            $call_param = floatval($params[$j]);
-                        } else {
-                            $call_param = '"' . mysql_real_escape_string($params[$j], $this->link) . '"';
+                        }
+                        else 
+                        {
+                            if (is_float($params[$j])) 
+                            {$call_param = floatval($params[$j]);} 
+                            else 
+                            { $call_param = '"' . mysql_real_escape_string($params[$j], $this->link) . '"';}
                         }
                         $assembled[] = $call_param;
                         $j += 1;
                     }
                 }
+                
                 $sql = implode('', $assembled);
             }
             $this->logIt("SQL: " . $sql, $verbose);
@@ -205,14 +216,13 @@ class Db {
             }
             $this->last_insert_id = mysql_insert_id($this->link);
             $this->rows = array();
-            if ($result !== false) {
-                while($row = mysql_fetch_assoc($qry)) {
-                    $this->rows[] = $row;
-                }
+            if ($result) 
+            {
+                while($row = mysql_fetch_assoc($qry)) 
+                {$this->rows[] = $row;}
             }
-            if ($result !== false) {
-                mysql_free_result($qry);
-            }
+            if ($result) 
+            {mysql_free_result($qry);}
             return true;
         }
         $this->logIt("Can't execute $sql", $verbose);
@@ -223,10 +233,8 @@ class Db {
      * getRow - shift a row from an SQL query results
      * @return an associative array of the row or false if no row available.
      */
-    public function getRow () {
-       $row = array_shift($this->rows);
-       return $row;
-    }
+    public function getRow () 
+    {return array_shift($this->rows);}
 
     /**
      * lastInsertRowId - get the id of the last inserted row.

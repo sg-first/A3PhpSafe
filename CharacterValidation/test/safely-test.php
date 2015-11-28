@@ -664,11 +664,8 @@ function testSaneUnicodeSupportPCRE() {
     global $assert;
 
     $allowInternational = false;
-    if (defined('PCRE_VERSION')) {
-        if (intval(PCRE_VERSION) >= 7) { // constant available since PHP 5.2.4
-                $allowInternational = true;
-        }
-    }
+    if (defined('PCRE_VERSION')&&intval(PCRE_VERSION)>=7) //PCRE_VERSION自php2.4开始可用
+    {$allowInternational = true;}
     $assert->ok($allowInternational, "PCRE should support proper UTF-8, may need to compile with --enable-unicode-properties");
     return "OK";
 }

@@ -173,7 +173,7 @@ function testEmbeddedQuestionMarks($MYSQL_CONNECTION_URL) {
         '?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, '. 
         '?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ' .
         '?, ?, ?, ?, ?, ?, ?)';
-    $isOK = $db->executeSQL($sql, array(
+    /*$isOK = $db->executeSQL($sql, array( //这玩意从来没被用到过
         $event['event_id'],
         $event['title'],
         $event['subtitle'],
@@ -203,7 +203,7 @@ function testEmbeddedQuestionMarks($MYSQL_CONNECTION_URL) {
         $event['scratch_pad'],
         $event['created'],
         $event['updated'],
-        $event['publication_date']), true);
+        $event['publication_date']), true);*/
 
     
     $sql = 'SELECT event_id FROM test_events WHERE event_id = ?';

@@ -11,7 +11,7 @@ protected static $Recursiving=false;//是否正在递归
 
 public static function AddPHP($path)//相对路径需要用/开头
 {
-	if($PathMode==false)
+	if(!$PathMode)
 	{$AllPHP[]=dirname(__FILE__).$path.".php";}
 	else
 	{$AllPHP[]=$path.".php";}
@@ -20,11 +20,8 @@ public static function AddPHP($path)//相对路径需要用/开头
 public static function Check($directory)//相对路径需要用/开头
 {
 	//如果是相对路径，连接前面绝对的部分
-	if($PathMode==false)
-	{
-		if($Recursiving==false)
-		{$directory=dirname(__FILE__).$directory;}
-	}
+	if(!$PathMode&&!$Recursiving)
+	{$directory=dirname(__FILE__).$directory;}
 	
 	$mydir = dir($directory);
 	while($file = $mydir->read())
