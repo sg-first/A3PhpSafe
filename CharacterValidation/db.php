@@ -1,10 +1,8 @@
 <?php
-/**
- * db.php - an evolving code DB library currently support mysql_* and mysqli_* PHP 
- * drivers.
- *
- * @author R. S. Doiel, <rsdoiel@usc.edu>
- */
+//db.php - 目前支持 mysql_*和mysqli_* PHP驱动
+
+const ERROR_LOG=ERROR_LOG;
+
 error_reporting(E_ALL | E_STRICT);
 @date_default_timezone_set(date_default_timezone_get());
 
@@ -29,7 +27,7 @@ class Db {
         $this->last_insert_id = 0;
         $this->rows = array();
         $this->rows_affected = 0;
-        $this->log_output = 'error_log';
+        $this->log_output = ERROR_LOG;
     }
 
     /**
@@ -38,7 +36,7 @@ class Db {
      * @return new log target
      */
     public function setLog($target) {
-        if ($target === 'echo' || $target === 'error_log') {
+        if ($target === 'echo' || $target === ERROR_LOG) {
             $this->log_output = $target;
         }
         return $this->log_output;
@@ -52,7 +50,7 @@ class Db {
     public function logIt($msg, $verbose) {
         if ($verbose) 
         {
-            if ($this->log_output === 'error_log') 
+            if ($this->log_output === ERROR_LOG) 
             {error_log($msg);} 
             else 
             {echo '<pre>Log: ' . $msg . '</pre>' . PHP_EOL;}

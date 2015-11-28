@@ -209,7 +209,7 @@ function testEmbeddedQuestionMarks($MYSQL_CONNECTION_URL) {
     $sql = 'SELECT event_id FROM test_events WHERE event_id = ?';
     $db->executeSQL($sql, array($event_id));
     $row = $db->getRow();
-    $assert->ok($row !== false, "Should get back a row of data for $event_id");
+    $assert->ok($row, "Should get back a row of data for $event_id");
     $assert->equal($event_id, $row['event_id'], "Should get matching event id $event_id");
     $sql = 'DELETE FROM test_events WHERE event_id = ?';
     $r = $db->executeSQL($sql, array($event_id));
@@ -220,7 +220,8 @@ function testEmbeddedQuestionMarks($MYSQL_CONNECTION_URL) {
 
 
 echo 'Starting [' . $argv[0] . '] ...' . PHP_EOL;
-if (version_compare(phpversion(), '5.5.0', '>=') === true) {
+if (version_compare(phpversion(), '5.5.0', '>=')) 
+{
     echo "\tmysqli_* driver test\n";
     // Test mysqli_* driver
     testConstructor($MYSQL_CONNECTION_URL);
@@ -228,7 +229,8 @@ if (version_compare(phpversion(), '5.5.0', '>=') === true) {
     testSQL($MYSQL_CONNECTION_URL);
     testEmbeddedQuestionMarks($MYSQL_CONNECTION_URL);
 }
-if (version_compare(phpversion(), '5.3.0', '>=') === true) {
+if (version_compare(phpversion(), '5.3.0', '>=')) 
+{
     // Test mysql_* driver
     echo "\tmysql_* driver test\n";
     $MYSQL_CONNECTION_URL = preg_replace('|mysqli|', 'mysql', $MYSQL_CONNECTION_URL, 1);

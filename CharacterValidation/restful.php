@@ -1,15 +1,15 @@
 <?php
 /**
- * restful.php - create a simple functional style library for building RESTful http services.
+ * restful.php - 创建一个简单的功能样式库构建 RESTful http 服务
  */
 
 /**
- * mergepath - A simple function to implode an array into a valid
+ * mergepath - 一个implode数组到有效的简单函数
  * file system path. 
  *
- * @param $path_parts - an associative array of values which will be
+ * @param $path_parts - 一个关联数组的值
  * used to assemble a new path.
- * @param $delim - (optional) the delimiter used to separate parts of a path.
+ * @param $delim - (optional) 使用分隔符来分割路径的各个部分
  * Defaults to '/'.
  * @return a string of the path or false if a problem occurs 
  */

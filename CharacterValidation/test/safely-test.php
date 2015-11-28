@@ -1,5 +1,4 @@
 <?php
-
 //safely_test.php的测试
 
 define("SAFELY_ALLOW_UNSAFE", true);
@@ -32,7 +31,7 @@ function testIsFilename () {
 function testSupportFunctions () {
 	global $assert;
 	
-	// Test basic GET args
+	//测试基本的GET参数
     $_GET = array();
 	$_GET["int"] = "1";
 	$_GET["float"] = "2.1";
@@ -625,7 +624,7 @@ BAD_JSON;
 {"txt": "<a href=\"http://example.com\">click</a>"}
 GOOD_JSON;
     $result = safeJSON($goodjson, $validation_map, false);
-    $assert->ok(strpos($result["txt"], "http://example.com") !== false, "href should not get removed.");
+    $assert->ok(strpos($result["txt"], "http://example.com") , "href should not get removed.");
     return "OK";
 }
 
