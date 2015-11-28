@@ -14,16 +14,16 @@ public static function SafeOutput($str)
  */
 public static function ScrutineeringSource()
 {
-	if(isset($_SERVER["HTTP_REFERER"]))
-	{
+    if(isset($_SERVER["HTTP_REFERER"]))
+    {
         $serverhost = $_SERVER["SERVER_NAME"];
         $strurl = str_replace("http://","",$_SERVER["HTTP_REFERER"]);  
         $strdomain = explode("/",$strurl);           
         $sourcehost = $strdomain[0];              
         if(strncmp($sourcehost, $serverhost, strlen($serverhost)))
         {return false;}//疑似跨站伪造请求
-		return true;
-	}
+        return true;
+    }
 }
 
 }

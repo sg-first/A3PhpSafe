@@ -162,7 +162,8 @@ function renderRoute($route_results, $use_gzip = false) {
         $headers[] = fmtHeader('ETag: ' . md5($content));
     }
 
-    if ($use_gzip === true) {
+    if ($use_gzip) 
+    {
         // Add the gzip compression
         $gzipoutput = gzencode($route_results['HTTP_CONTENT'], 6); 
         $headers[] = fmtHeader('Content-Encoding: gzip');
