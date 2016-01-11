@@ -4,8 +4,8 @@ class FileValidation{
 /* 
 处理原理：对图片类型进行简单的检测，并以原图进行重新生成（重新生成会打乱其中的恶意代码） 
 使用方法：用此函数替换move_uploaded_file（仅针对gif png与jpg图片）
-参数： $file $_FILES['']获取的值; $path 图片生成的物理路径（包含图片名称） 
-返回值： 上传成功 true; 图片类型异常 -1;上传失败 false;
+参数：$file $_FILES['']获取的值，$path 图片生成的物理路径（包含图片名称） 
+返回值：上传成功 true，图片类型异常 -1，上传失败 false
  */  
 public static function ImageSave($file, $path) 
 {  
