@@ -174,7 +174,8 @@ class Db {
                 $parts = explode('?', $sql);
                 $assembled = array();
                 
-                for ($i = 0, $j = 0; $i < count($parts); $i += 1) 
+				$j = 0;
+                for ($i = 0; $i < count($parts); $i += 1) 
                 {
                     $assembled[] = $parts[$i];
                     $call_param = '';

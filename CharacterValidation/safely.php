@@ -1,12 +1,8 @@
 <?php
 /**
- * safely.php - Library functions to retrofit legacy PHP code to more
- * safely handle $_GET, $_POST and $_SERVER to prevent common exploits
- * like XSS and SQL injection.
- *
- * @author R. S. Doiel, <rsdoiel@usc.edu>
- * copyright (c) 2012 all rights reserved
- * University of Southern California
+ * safely.php - 改造传统的php代码使其更安全
+ * 安全处理 $_GET, $_POST 和 $_SERVER 防止常见的攻击，像XSS和SQL注入
+ * @author R. S. Doiel, 3A
  */
 if (defined("SAFELY_ALLOW_UNSAFE") === false) {
     define("SAFELY_ALLOW_UNSAFE", false);
@@ -194,7 +190,7 @@ function strip_attributes($s, $allowedattr = array("href", "src", "title", "alt"
                     in_array(strtolower(trim($tmp[0])), $allowedattr)&&
                     strpos(strtolower($tmp[1]), "javascript:") === false//只有允许的属性应该通过，但链接必须不包含js协议
                     )
-               {$newattrs[] = trim($a);//属性不应该有js注入}
+               {$newattrs[] = trim($a);/*属性不应该有js注入*/}
            }
            $attrs = implode(" ", $newattrs);
            $rpl = str_replace($r[1], $attrs, $tag);

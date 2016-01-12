@@ -43,7 +43,7 @@ public static function ImageSave($file, $path)
 protected static function GetTypeCode($filename)
 {
     $file = fopen($filename, "rb");  
-    $bin = fread($file, 2);//只读2字节  
+    $bin = fread($file, 2); //只读2字节  
     fclose($file);  
     $strInfo = @unpack("C2chars", $bin);  
     return intval($strInfo['chars1'].$strInfo['chars2']);  
