@@ -14,7 +14,7 @@ function connect_mysql($localhost,$account,$password) //return -1 ->failed
     return $con;
 }
  
-function create_mysql($db) //return 1->succeed;
+function create_mysql($db) //return 1->succeed
 {
     if(mysql_query("CREATE DATABASE ".$db,$con)){
         return 1;
@@ -45,7 +45,7 @@ function insert_into_mysql($db,$table_name,$colum,$value) //return 1 ->succeed
 VALUES (value1, value2,....)*/
 {
     mysql_select_db($db, $con);
-    $resule=mysql_query("INSERT INTO ".$table_name."(".$colum.") VALUES (".$value.")",$con);
+    $result=mysql_query("INSERT INTO ".$table_name."(".$colum.") VALUES (".$value.")",$con);
     if(!$result)
     {
 		return -1;
