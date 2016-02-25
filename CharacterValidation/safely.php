@@ -4,10 +4,10 @@
  * 安全处理 $_GET, $_POST 和 $_SERVER 防止常见的攻击，像XSS和SQL注入
  * @author R. S. Doiel, 3A
  */
-if (defined("SAFELY_ALLOW_UNSAFE") === false) {
+if (!defined("SAFELY_ALLOW_UNSAFE")) {
     define("SAFELY_ALLOW_UNSAFE", false);
 }
-if (defined("SAFELY_ALLOWED_HTML") === false) {
+if (!defined("SAFELY_ALLOWED_HTML")) {
     // List of safe elements derived from https://developer.mozilla.org/en-US/docs/Web/HTML/Element
     $safe_element_list = '<a><abbr><acronym><address><area><article><aside><audio><b><base><basefont><bdi><bdo><bgsound><big><blink><blockquote><body><br><button><canvas><caption><center><cite><code><col><colgroup><content><data><datalist><dd><decorator><del><details><dfn><dialog><dir><div><dl><dt><element><em><embed><fieldset><figcaption><figure><font><footer><form><frame><frameset><h1><h2><h3><h4><h5><h6><head><header><hgroup><hr><html><i><iframe><img><input><ins><isindex><kbd><keygen><label><legend><li><link><listing><main><map><mark><marquee><menu><menuitem><meta><meter><nav><nobr><noframes><noscript><object><ol><optgroup><option><output><p><param><picture><plaintext><pre><progress><q><rp><rt><ruby><s><samp><section><select><shadow><small><source><spacer><span><strike><strong><style><sub><summary><sup><table><tbody><td><template><textarea><tfoot><th><thead><time><title><tr><track><tt><u><ul><var><video><wbr><xmp>';
 
@@ -15,11 +15,11 @@ if (defined("SAFELY_ALLOWED_HTML") === false) {
 }
 
 /**
- * utf2html - convert UTF-8 characters to appropriate HTML entities.
+ * utf2html - 转换UTF-8字符相应的HTML实体
  * Take from the comments at http://us1.php.net/manual/en/function.mb-encode-numericentity.php
  * by dan@boxuk.com.
  * @param $utf2html_string - the string to convert.
- * @return the converted string.
+ * @return 转换后的字符串
  */
 function utf2html ($utf2html_string, $is_hex = false) 
 {
@@ -63,12 +63,12 @@ function utf2html ($utf2html_string, $is_hex = false)
  * @return a time object or throw an exception if parse fails.
  */
 function safeStrToTime ($s, $offset = false) {
-    if ($offset === false) {
+    if (!$offset) {
         $time = strtotime($s);
     } else {
         $time = strtotime($s, $offset);
     }
-    if ($time === false || $time === -1) {
+    if (!$time || $time === -1) {
         throw new Exception ("Can't parse date: $s");
     }
     return $time;
@@ -81,7 +81,7 @@ function safeStrToTime ($s, $offset = false) {
  * @return true if a URL false otherwise
  */
 function isValidUrl($s, $protocols = null) {
-    if (filter_var($s, FILTER_VALIDATE_URL) === false) {
+    if (filter_var($s, !FILTER_VALIDATE_URL)) {
         return false;
     }
     if ($protocols === null) {
@@ -115,7 +115,7 @@ function isValidFilename($s) {
  * @return the validated string or false if it appears not to be an email address.
  */
 function isValidEmail($s) {
-    if (filter_var($s, FILTER_VALIDATE_EMAIL) === false) {
+    if (!filter_var($s, FILTER_VALIDATE_EMAIL)) {
         return false;
     }
     return true;
@@ -132,7 +132,7 @@ function isValidEmail($s) {
  * analysize the content.
  * @return a validation map array
  */
-function defaultValidationMap ($obj/*,$do_urldecode = false*/) 
+function defaultValidationMap ($obj) 
 {
     $is_varname = '/^([A-Z,a-z]|_|[0-9])+$/';
     $has_tags = '/(<[A-Z,a-z]+|<\/[A-Z,a-z]+>)/';
@@ -140,9 +140,9 @@ function defaultValidationMap ($obj/*,$do_urldecode = false*/)
     
     foreach ($obj as $key => $value) {
         if (isset($value)) {
-            if (filter_var($value, FILTER_VALIDATE_INT) !== false) {
+            if (filter_var($value, FILTER_VALIDATE_INT)) {
                 $validation_map[$key] = "Integer";
-            } else if (filter_var($value, FILTER_VALIDATE_FLOAT) !== false) {
+            } else if (filter_var($value, FILTER_VALIDATE_FLOAT)) {
                 $validation_map[$key] = "Float";
             } else if (filter_var($value, FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE) !== null) {
                 $validation_map[$key] = "Boolean";
@@ -150,9 +150,9 @@ function defaultValidationMap ($obj/*,$do_urldecode = false*/)
                 $validation_map[$key] = "Varname";
             } else if (gettype($value) === "string" && preg_match($has_tags, $value) === 1) {
                 $validation_map[$key] = "HTML";
-            } else if (isValidUrl($value) === true) { 
+            } else if (isValidUrl($value)) { 
                 $validation_map[$key] = "Url";
-            } else if (isValidEmail($value) === true) {
+            } else if (isValidEmail($value)) {
                 $validation_map[$key] = "Email";
             } else {
                 $validation_map[$key] = "Text";
@@ -188,9 +188,9 @@ function strip_attributes($s, $allowedattr = array("href", "src", "title", "alt"
                     isset($tmp[1]) && 
                     trim($tmp[0]) !== "" && 
                     in_array(strtolower(trim($tmp[0])), $allowedattr)&&
-                    strpos(strtolower($tmp[1]), "javascript:") === false//只有允许的属性应该通过，但链接必须不包含js协议
+                    !strpos(strtolower($tmp[1]), "javascript:") //只有允许的属性应该通过，但链接必须不包含js协议
                     )
-               {$newattrs[] = trim($a);/*属性不应该有js注入*/}
+               {$newattrs[] = trim($a);}//属性不应该有js注入
            }
            $attrs = implode(" ", $newattrs);
            $rpl = str_replace($r[1], $attrs, $tag);
@@ -214,11 +214,11 @@ function fix_html_quotes($s) {
             $inCData = true;
         } else if ($a[$i] === '<') {
             $inCData = false;
-        } else if ($inCData === true) {
+        } else if ($inCData) {
             $a[$i] = str_replace(array('"', "'"), array('&quot;', '&apos;'), $a[$i]);
         }
     }
-    return  implode('', $a);
+    return implode('', $a);
 }
 
 /**
@@ -230,7 +230,7 @@ function escape($value)
 {
     // 通过转换为UTF-8解决多字节问题
     $from_encoding = mb_detect_encoding($value);
-    if ($from_encoding === false) 
+    if (!$from_encoding) 
     {throw new Exception("character encoding detection failed!");} 
     else 
     {
@@ -268,7 +268,7 @@ function makeAs ($value, $format, $verbose = false) {
         $a = array();
         foreach($value as $i => $val) 
         {
-            if (is_numeric($val) && intval($val) !== false) 
+            if (is_numeric($val) && intval($val)) 
             {$a[] = intval($val); }
         }
         return $a;
@@ -317,15 +317,15 @@ function makeAs ($value, $format, $verbose = false) {
         if (isValidUrl($value) === true) 
         {return $value;}
         // Check to see if we're just missing protocol and try http://.
-        if (strpos($value, '://') === false  && isValidUrl('http://' . $value) === true) 
+        if (!strpos($value, '://') && isValidUrl('http://' . $value)) 
         {return 'http://' . $value;}
         return false;
     case 'email':
-        if (isValidEmail($value) === true) 
+        if (isValidEmail($value))
         {return $value;}
         return false;
     case 'filename':
-        if (isValidFilename($value) === true) 
+        if (isValidFilename($value))
         {return $value;}
         return false;
     }
@@ -334,7 +334,7 @@ function makeAs ($value, $format, $verbose = false) {
         str_replace(">", "\>", $format) . '$' . ">",
         $value);
 
-    if ($verbose === true) 
+    if ($verbose) 
     {error_log("value, format and preg_math result: $value $format -> $preg_result");}
     if ($preg_result === 1) 
     {return $value;}
@@ -353,7 +353,7 @@ function safeGET ($validation_map = NULL, $verbose = false) {
     global $_GET;
     $results = array();
 
-    if (SAFELY_ALLOW_UNSAFE === true && $validation_map === NULL) {
+    if (SAFELY_ALLOW_UNSAFE && $validation_map === NULL) {
         // We support limited auto-detect types otherwise App
         // Code needs to supply a validation map.
         $validation_map = defaultValidationMap($_GET/*,true*/);
@@ -383,7 +383,7 @@ function safePOST ($validation_map = NULL, $verbose = false) {
     global $_POST;
     $results = array();
     
-    if (SAFELY_ALLOW_UNSAFE === true && $validation_map === NULL) {
+    if (SAFELY_ALLOW_UNSAFE $validation_map === NULL) {
         $validation_map = defaultValidationMap($_POST/*,false*/);
     }
     foreach($validation_map as $key => $format) {
