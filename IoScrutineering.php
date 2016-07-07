@@ -24,6 +24,7 @@ public static function ScrutineeringSource()
         {return false;}//疑似跨站伪造请求
         return true;
     }
+    throw new Exception("no HTTP_REFERER");
 }
 
 }

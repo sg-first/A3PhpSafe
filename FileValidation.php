@@ -51,7 +51,7 @@ protected static function GetTypeCode($filename)
 
 public static function ValidationType($filename)
 {
-	switch (GetTypeCode($filename)) 
+	switch (FileValidation::GetTypeCode($filename)) 
 	{
 		case 7790: return 'exe';
 		case 8297: return 'rar';
