@@ -4,6 +4,7 @@
  * 安全处理 $_GET, $_POST 和 $_SERVER 防止常见的攻击，像XSS和SQL注入
  * @author R. S. Doiel, 3A
  */
+
 if (!defined("SAFELY_ALLOW_UNSAFE")) {
     define("SAFELY_ALLOW_UNSAFE", false);
 }
@@ -16,8 +17,6 @@ if (!defined("SAFELY_ALLOWED_HTML")) {
 
 /**
  * utf2html - 转换UTF-8字符相应的HTML实体
- * Take from the comments at http://us1.php.net/manual/en/function.mb-encode-numericentity.php
- * by dan@boxuk.com.
  * @param $utf2html_string - the string to convert.
  * @return 转换后的字符串
  */
@@ -98,9 +97,9 @@ function isValidUrl($s, $protocols = null) {
 }
 
 /**
- * isValidFilename - check to see if the string conforms to a valid filename (alaphnumeric plus .,_,-)
- * @param $s - string to check
- * @return true if valid filename false otherwise.
+ * isValidFilename - 查看字符串是否是有效的文件名
+ * @param $s - 要检查的字符串
+ * @return 是合法的文件名为true
  */
 function isValidFilename($s) {
     if (!preg_match('/^(?:[a-z0-9_-]|\/|\.(?!\.))+$/iD', $s) || mb_strlen($s, "UTF-8") >= 250) {
@@ -163,13 +162,13 @@ function defaultValidationMap ($obj)
 }
 
 /**
- * strip_attributes - remove attributes from HTML elements except for href, src, title
+ * strip_attributes - 删除HTML元素的属性，除了href, src, title
  * Based on stackexchange discussions at 
  * http://stackoverflow.com/questions/770219/how-can-i-remove-attributes-from-an-html-tag
  *
- * @param $s - the HTML string to be cleaned
- * @param $allowedattr - an array of the allowed attributes (e.g. href, src, title, alt)
- * @return HTML string with only allowed attributes.
+ * @param $s - 要被删的HTML代码
+ * @param $allowedattr - 一个允许属性的数组 (e.g. href, src, title, alt)
+ * @return 只有允许属性的HTML字符串
  */
 function strip_attributes($s, $allowedattr = array("href", "src", "title", "alt")) {
     if (preg_match_all("/<[^>]*\\s([^>]*)\\/*>/msiU", $s, $res, PREG_SET_ORDER)) {
@@ -201,10 +200,10 @@ function strip_attributes($s, $allowedattr = array("href", "src", "title", "alt"
 }
 
 /**
- * fix_html_quotes - Scan a string and when you find quotes in the CDATA convert
- * to appropriate entity.
- * @param $s - the string to check and convert.
- * @return string with quotes appropriately converted.
+ * fix_html_quotes - 当你找到CDATA convert引号时的扫描字符串
+ * 为了找到适当的实体
+ * @param $s - 检查和转换的字符串
+ * @return 转换适当引号后的字符串
  */
 function fix_html_quotes($s) {
     $a = str_split($s);
@@ -222,8 +221,8 @@ function fix_html_quotes($s) {
 }
 
 /**
- * replace non-ascii characters with hex code
- * this replace mysql_real_escape_string because this requires a mysql
+ * 十六进制码替代非ASCII字符
+ * 这取代mysql_real_escape_string，因为这需要一个MySQL
  * connection to exist.
  */
 function escape($value) 
@@ -239,7 +238,7 @@ function escape($value)
     }
 
     $search  = array( "\\",   "\x00", "\n",  "\r",  "'",  '"',  "\x1a" );
-    $replace = array( "\\\\", "\\0",  "\\n", "\\r", "\'", '\"', "\\Z" );
+    $replace = array( "\\\\", "\\0",  "\\n", "\\r", "'", '\"', "\\Z" );
 
     return str_replace($search, $replace, $value);
 }
@@ -331,7 +330,7 @@ function makeAs ($value, $format, $verbose = false) {
     }
     // We haven't found one of our explicit formats so...
     $preg_result = preg_match(">" . '^' . 
-        str_replace(">", "\>", $format) . '$' . ">",
+        str_replace(">", ">", $format) . '$' . ">",
         $value);
 
     if ($verbose) 
@@ -342,10 +341,9 @@ function makeAs ($value, $format, $verbose = false) {
 }
 
 /**
- * safeGET - if necessary generate a default validation object and
- * process the global $_GET returning a sanitized version.
- * @param $validation_map - You should supply an explicit validation map. Will allow NULL
- * if SAFELY_ALLOW_UNSAFE defined with true.
+ * safeGET - 如果必要生成一个默认验证对象，和全局的$_GET一起返回一个sanitized version
+ * @param $validation_map - 你应该提供一个明确的验证图。将允许NULL
+ * 如果SAFELY_ALLOW_UNSAFE定义为true
  * @param $verbose - log regexp makeAs results. (default is false)
  * @return the sanitized version of $_GET.
  */
@@ -354,8 +352,7 @@ function safeGET ($validation_map = NULL, $verbose = false) {
     $results = array();
 
     if (SAFELY_ALLOW_UNSAFE && $validation_map === NULL) {
-        // We support limited auto-detect types otherwise App
-        // Code needs to supply a validation map.
+        // 我们支持有限的自动检测类型，否则APP代码需要提供一个验证图
         $validation_map = defaultValidationMap($_GET/*,true*/);
     }
     foreach($validation_map as $key => $format) {
@@ -370,12 +367,10 @@ function safeGET ($validation_map = NULL, $verbose = false) {
 }
 
 /**
- * safePOST - if necessary generate a default validation object and
- * process the global $_POST returning a sanitized version.
- * @param $validation_map - You should supply an explicit validation map. Will allow NULL
- * if SAFELY_ALLOW_UNSAFE defined with true.
- * @return false if their is a problem otherwise the sanitized verion of
- * $_POST.
+ * safePOST - if 如果必要生成一个默认验证对象，和全局的$_POST一起返回一个sanitized version
+ * @param $validation_map - 你应该提供一个明确的验证图。将允许NULL
+ * 如果SAFELY_ALLOW_UNSAFE定义为true
+ * @return 如果有问题返回false，否则返回$_POST的sanitized verion
  * @param $verbose - log regexp makeAs results. (default is false)
  * @return the sanitized version of $_POST
  */
@@ -383,7 +378,7 @@ function safePOST ($validation_map = NULL, $verbose = false) {
     global $_POST;
     $results = array();
     
-    if (SAFELY_ALLOW_UNSAFE $validation_map === NULL) {
+    if (SAFELY_ALLOW_UNSAFE && $validation_map === NULL) {
         $validation_map = defaultValidationMap($_POST/*,false*/);
     }
     foreach($validation_map as $key => $format) {
